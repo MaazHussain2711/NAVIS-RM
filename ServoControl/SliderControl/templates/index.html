@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Servo Control Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>🤖 Servo Control Panel</h1>
+    <div class="container">
+        {% for name, config in servos.items() %}
+        <div class="servo-control">
+            <label for="{{ name }}">{{ name.replace('_', ' ').title() }} ({{ config.min }}° - {{ config.max }}°)</label>
+            <input type="range" id="{{ name }}" name="{{ name }}"
+                   min="{{ config.min }}" max="{{ config.max }}"
+                   value="{{ (config.min + config.max) // 2 }}"
+                   oninput="updateServo('{{ name }}', this.value)">
+            <span id="{{ name }}_val">{{ (config.min + config.max) // 2 }}</span>
+        </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        async function updateServo(name, angle) {
+            document.getElementById(`${name}_val`).innerText = angle;
+            await fetch('/move_servo', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({name, angle})
+            });
+        }
+    </script>
+</body>
+</html>
