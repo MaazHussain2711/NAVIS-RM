@@ -19,6 +19,9 @@
     Wrist : 
         Left - 9
         Right - 10
+    Hand:
+        Left - 7
+        Right - 11
 
 
 
